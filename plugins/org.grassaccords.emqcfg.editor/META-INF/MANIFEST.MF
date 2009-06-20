@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: mqcfg Editor Plug-in
 Bundle-SymbolicName: org.grassaccords.emqcfg.editor; singleton:=true
-Bundle-Version: 0.5.0.qualifier
+Bundle-Version: 1.0.0
 Bundle-Activator: org.grassaccords.emqcfg.MqcfgEditorPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,

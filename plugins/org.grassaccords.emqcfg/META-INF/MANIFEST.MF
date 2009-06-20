@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: mqcfg Plug-in
 Bundle-SymbolicName: org.grassaccords.emqcfg;singleton:=true
-Bundle-Version: 0.5.0.qualifier
+Bundle-Version: 1.0.0
 Require-Bundle: org.openarchitectureware.dependencies;visibility:=reexport,
  org.antlr;visibility:=reexport,
  org.openarchitectureware.xtext.core.base;visibility:=reexport,
