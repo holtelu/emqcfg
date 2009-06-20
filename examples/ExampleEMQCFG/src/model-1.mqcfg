@@ -1,0 +1,81 @@
+node Node1 {
+ description "Beschreibung Node1"
+ qmgrs Q1, Q2
+}
+
+node Node2 {
+ description "Beschreibung Node1"
+ qmgrs Q3
+}
+
+node Node3 {
+ description "Beschreibung Node1"
+ qmgrs Q4
+}
+
+
+qmgr Q1 {
+ description "Beschreibung Q2"
+ interface i1 { 
+	host "q1.foo.bar"
+	ip 192.168.0.100
+	port 1414
+ } 
+}
+
+qmgr Q2 {
+ description "Beschreibung Q2"
+ interface i1 { 
+	host "q1.foo.bar"
+	ip 192.168.0.100
+	port 1415
+ } 
+}
+
+qmgr Q3 {
+ description "Beschreibung Q2"
+ interface i1 { 
+	host "q1.foo.bar"
+	ip 192.168.0.100
+	port 1416
+ } 
+ interface i2 { 
+	host "q1.foo.bar"
+	ip 192.168.10.102
+	port 1414
+ } 
+}
+
+qmgr Q4 {
+ description "Beschreibung Q2"
+ interface i1 { 
+	host "q1.foo.bar"
+	ip 192.168.10.103
+	port 1414
+ } 
+}
+
+channel Chl1 {
+	description "Beschreibung Chl1"
+	src Q1@ i1
+	dst Q2@ i1
+}
+
+
+channel Chl2 {	
+	description "Beschreibung Chl2"
+	src Q2@ i1
+	dst Q1@ i1
+}
+
+cluster Cl1 {
+	description "Cluster Cl1"
+	members *Q2@i1, *Q3@i1
+}
+
+cluster Cl2 {
+	description "Cluster Cl1"
+	members *Q3@i2, *Q4@i1
+}
+
+

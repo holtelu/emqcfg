@@ -1,0 +1,32 @@
+
+extension org::grassaccords::emqcfg::Extensions;
+extension org::grassaccords::emqcfg::GenLinking reexport;
+extension org::openarchitectureware::xtext::parser::LinkerUtils;
+
+/*
+ * If you need more sophisticated linking semantic just overwrite the linking extensions here and add your own logic.
+ * Have a look at the generated org::grassaccords::emqcfg::GenLinking (typically located in src-gen)
+ */
+link(emf::EObject this) :
+	let all = allLocalElements() :
+		all.typeSelect(mqcfg::Node).collect(e|e.link_qmgrs()) ->
+		all.typeSelect(mqcfg::QMgrBinding).collect(e|e.link_qmgr()) ->
+		all.typeSelect(mqcfg::QMgrBinding).collect(e|e.link_interface()) ->
+		all.typeSelect(mqcfg::ClusterQMgrBinding).collect(e|e.link_qmgr()) ->
+		all.typeSelect(mqcfg::ClusterQMgrBinding).collect(e|e.link_interface()) ->
+        null;
+ 
+ 
+Void link_interface(mqcfg::QMgrBinding this) :
+	(let ents = allQMgrs().select(e|e.name == this.parsedString("qmgr")).first().interfaces :
+
+		this.setInterface(ents.select(e|e.name == this.parsedString("interface")).first()))
+;
+
+Void link_interface(mqcfg::ClusterQMgrBinding this) :
+	(let ents = allQMgrs().select(e|e.name == this.parsedString("qmgr")).first().interfaces :
+
+		this.setInterface(ents.select(e|e.name == this.parsedString("interface")).first()))
+;
+
+ 

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.grassaccords.emqcfg.feature"
+      label="eMQCfg Feature"
+      version="0.5.0.qualifier"
+      provider-name="grassaccords">
+
+   <description url="http://code.google.com/p/emqcfg/">
+      This is an Eclipse text based WebSphere MQ environment configuration editor.
+
+It uses Xtext to define a DSL describing MQ environments. With a concrete model you can generate all artifacts (scripts, documentation) needed to create the environment.
+   </description>
+
+   <copyright>
+      Copyright (c) 2009 grassaccords
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      Eclipse Public License - v 1.0
+   </license>
+
+   <requires>
+      <import plugin="org.openarchitectureware.dependencies"/>
+      <import plugin="org.antlr"/>
+      <import plugin="org.openarchitectureware.xtext.core.base"/>
+      <import plugin="org.openarchitectureware.xtext.generator"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.openarchitectureware.xtext.editor.base"/>
+      <import plugin="org.openarchitectureware.xtext.core"/>
+   </requires>
+
+   <plugin
+         id="org.grassaccords.emqcfg"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.grassaccords.emqcfg.editor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.grassaccords.emqcfg.generator"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

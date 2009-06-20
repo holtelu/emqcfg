@@ -1,0 +1,54 @@
+«IMPORT mqcfg»
+«EXTENSION org::grassaccords::emqcfg::Extensions»
+«EXTENSION org::grassaccords::emqcfg::Graphviz»
+«EXTENSION org::grassaccords::emqcfg::MQ»
+
+«DEFINE dotfile FOR Model»
+«FILE "doc/overview.dot"-»
+digraph G {
+	overlap=false;
+	concentrate=false;
+//Cluster
+	subgraph cluster_cluster {
+		node [shape="egg",color=lightgrey,style=filled]
+«FOREACH this.clusters AS cluster-»
+			«cluster.nodeId()» [label="«cluster.label()»"];
+«ENDFOREACH-»
+		label="Cluster"
+	}
+
+«FOREACH this.nodes AS node-»
+	subgraph cluster_«node.nodeId()» {
+		//Queue Manager
+		node [color=yellow,style=filled]
+«FOREACH node.qmgrs AS qmgr-»
+		«qmgr.nodeId()» [shape="record",label="{<name> «qmgr.name» «EXPAND qmgrInterfaceDefRecords FOR qmgr-»}"];
+«ENDFOREACH-»
+		label="«node.label()»"
+	}
+«ENDFOREACH-»
+
+//Cluster-Bindings
+«FOREACH this.clusters AS cluster-»
+	«FOREACH cluster.members AS clusterBinding-»
+	«clusterBinding.qmgr.nodeId()»:«clusterBinding.interface.nodeId()» -> «cluster.nodeId()» [arrowhead=odiamond];
+	«ENDFOREACH-»
+«ENDFOREACH-»
+	
+//Channel-Bindings
+«FOREACH allChannels() AS channel-»
+	«channel.srcQMgr.qmgr.nodeId()»:«channel.srcQMgr.interface.nodeId()» -> «channel.dstQMgr.qmgr.nodeId()»:«channel.dstQMgr.interface.nodeId()» [label="«channel.mqChannelName()»"];
+«IF channel.bidirectional-»
+	«channel.dstQMgr.qmgr.nodeId()»:«channel.dstQMgr.interface.nodeId()» -> «channel.srcQMgr.qmgr.nodeId()»:«channel.srcQMgr.interface.nodeId()» [label="«channel.mqReverseChannelName()»"];
+«ENDIF-»
+	
+«ENDFOREACH-»
+}
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE qmgrInterfaceDefRecords FOR QMgr-»
+«IF this.interfaces.size>0-»
+| «FOREACH this.interfaces AS interface SEPARATOR ' | '»{<«interface.nodeId()»> «interface.name» |  «interface.ip»:«interface.port» }«ENDFOREACH-»
+«ENDIF-»
+«ENDDEFINE»

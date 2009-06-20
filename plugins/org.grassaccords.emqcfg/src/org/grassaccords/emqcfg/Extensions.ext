@@ -1,0 +1,128 @@
+import mqcfg;
+
+extension org::grassaccords::emqcfg::GenExtensions reexport;
+/*
+ * This extension file is intended to be used for defining
+ * general extensions for the domain model.
+ * It inherits generated extensions from GenExtensions.
+ * You can overwrite or specialize them here
+ */
+ 
+ /*
+  * Gibt alle Nodes zurück.
+  */
+allNodes(emf::EObject this) :
+	allElements().typeSelect(Node)
+; 
+
+ /*
+  * Gibt alle Queuemanager zurück.
+  */
+allQMgrs(emf::EObject this) :
+	allElements().typeSelect(QMgr)
+; 
+
+ /*
+  * Gibt alle Qmgr-Bindings zurück.
+  */
+allQMgrBindings(emf::EObject this) :
+	allElements().typeSelect(QMgrBinding)
+;   
+
+ /*
+  * Gibt alle Cluster-Qmgr-Bindings zurück.
+  */
+allClusterQMgrBindings(emf::EObject this) :
+	allElements().typeSelect(ClusterQMgrBinding)
+;   
+
+/*
+ * Gibt alle Channels zurück.
+ */
+allChannels(emf::EObject this) :
+	allElements().typeSelect(Channel)
+; 
+
+/*
+ * Gibt alle Cluster zurück.
+ */
+allClusters(emf::EObject this) :
+	allElements().typeSelect(Cluster)
+; 
+
+ /*
+  * Gibt den Node zurück, dem der übergebene Queuemanager zugeordnet ist.
+  */
+qmgrNode(QMgr this) :
+	allNodes().selectFirst(node|node.qmgrs.select(qmgr|qmgr.name==this.name).size==1)
+;
+
+ /*
+  * Zeigt an, ob der übergebene Queuemanager einem Node zugeordnet ist.
+  */
+isAssignedToNode(QMgr this) :
+	allNodes().qmgrs.name.select(e|e==this.name).size==1;
+
+/*
+ * Gibt alle Channels zurück, wo der übergebenen Queue Manager als Quelle verwendet wird.
+ */
+qmgrSrcChannels(QMgr this) :
+	allChannels().select(chl|chl.srcQMgr.qmgr.name==this.name)
+;
+
+/*
+ * Gibt alle Channels zurück, wo der übergebenen Queue Manager als Ziel verwendet wird.
+ */
+qmgrDstChannels(QMgr this) :
+	allChannels().select(chl|chl.dstQMgr.qmgr.name==this.name)
+;
+
+/**
+ * Gibt alle Cluster zurück, in denen der übergebene Queue Manager Repository ist.
+ */	
+qmgrRepo(QMgr this) :
+	allClusters().select(cluster|cluster.members.select(e|e.qmgr.name==this.name).size>0)
+	//repoQMgr.qmgr.select(qmgr|qmgr.name==this.name).size>0)
+;
+
+/*
+ * Zeigt an, ob es sich bei dem übergebenen Queue Manager um ein Repository Queue Manager handelt.
+ */
+isRepoQMgr(QMgr this) :
+	qmgrRepo().size>0
+;
+
+
+/**
+ * Gibt die Cluster-Bindungen des übergebenen Queue Managers zurück.
+ */	
+qmgrClusterBindings(QMgr this) :
+	let lst=allClusterQMgrBindings().select(binding|binding.qmgr==this) :
+	lst.reject(e1|!lst.select(e2|e1.interface.name==e2.interface.name && lst.indexOf(e2)<lst.indexOf(e1)).isEmpty)
+;
+
+/**
+ * Gibt eine Lister der Cluster zurück, in denen die gegebene Bindung referneziert wird.
+ */
+cluster(ClusterQMgrBinding this) :
+	allClusters().select(cl|cl.members.select(qb|qb.qmgr.name==this.qmgr.name && qb.interface.name==this.interface.name).size>0)
+;
+
+/*
+ * Zeigt an, ob der übergebene Queue Manager einem Cluster zugeordnet ist. 
+ */
+isMemberOfCluster(QMgr this) :
+	allClusters().members.qmgr.name.contains(this.name);
+
+/*
+ * Zeigt an, ob der übergebene Queue Manager einem Node zugeordnet ist
+ */
+isAssignedToNode(QMgr this) :
+	allNodes().qmgrs.name.contains(this.name);
+
+/*
+ * Gibt die Connection als String in der Form <ip>:<port> zurück.
+ */ 
+interfaceConnectionName(Interface this) :
+	this.ip+":"+this.port
+;

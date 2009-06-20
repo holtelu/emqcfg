@@ -1,0 +1,50 @@
+Model :
+ (nodes+=Node | qmgrs+=QMgr | clusters+=Cluster | channels+=Channel)*
+;
+
+Node : "node" name=ID "{"
+ "description" description=STRING
+ ("qmgrs" qmgrs+=[QMgr] ("," qmgrs+=[QMgr])*)?
+"}"
+;
+
+QMgr : "qmgr" name=ID "{"
+ "description" description=STRING
+ (interfaces+=Interface)+
+"}"
+;
+
+String IPAddress :
+	INT"."INT"."INT"."INT
+	;
+
+Interface :
+ "interface" name=ID "{"
+  "host" host=STRING 
+  "ip" ip=IPAddress
+  "port" port=INT 
+ "}"
+;
+
+QMgrBinding :
+	qmgr=[QMgr]"@"interface=[Interface]
+;	
+
+ClusterQMgrBinding :
+	(isRepository?="*")? qmgr=[QMgr]"@"interface=[Interface]
+;	
+
+Cluster :
+	"cluster" name=ID "{"
+		"description" description=STRING
+		("members" members+=ClusterQMgrBinding ("," members+=ClusterQMgrBinding)*)?
+	"}"	
+	;
+
+Channel :
+ (bidirectional?="bidirectional")? "channel" name=ID "{"
+ "description" description=STRING 
+ "src" srcQMgr=QMgrBinding
+ "dst" dstQMgr=QMgrBinding
+"}"
+;

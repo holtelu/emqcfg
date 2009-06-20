@@ -1,0 +1,50 @@
+import mqcfg;
+import codeassist;
+
+extension org::grassaccords::emqcfg::Extensions;
+extension org::grassaccords::emqcfg::EditorExtensions;
+extension org::grassaccords::emqcfg::GenContentAssist reexport;
+
+/*
+ * There are two types of extensions one can define
+ *
+ * completeMetaType_feature(ModelElement ele, String prefix)
+ * This one is called for assignments only. It gets the underlying Modelelement and the current prefix passed in.
+ *
+ * Note that only proposals with 'Proposal.toInsert.toLowerCase().startsWith(prefix.toLowerCase())' will be proposed in the editor
+ * 
+ * you can sort and/or filter the proposals by overwriting 'List[Proposal] sortProposals(List[Proposal] proposalsToSort)'
+ */
+/* proposals for QMgrBinding::qmgr */
+List[Proposal] completeQMgrBinding_qmgr(Channel channel, String prefix) :
+	channel.allVisibleElements().typeSelect(mqcfg::QMgr).collect(x|newProposal(x.label()+"@",x.id()+"@ " ,x.image()));
+
+/* proposals for QMgrBinding::interface */
+List[Proposal] completeQMgrBinding_interface(QMgrBinding binding, String prefix) :
+	binding.qmgr.interfaces.collect(x|newProposal(x.label(),x.id(),x.image()));
+
+/* proposals for ClusterQMgrBinding::qmgr */
+List[Proposal] completeClusterQMgrBinding_qmgr(emf::EObject ctx, String prefix) :
+	ctx.allVisibleElements().typeSelect(mqcfg::QMgr).collect(x|newProposal(x.label()+"@",x.id()+"@ ",x.image()));
+
+/* proposals for ClusterQMgrBinding::interface */
+List[Proposal] completeClusterQMgrBinding_interface(ClusterQMgrBinding binding, String prefix) :
+	binding.qmgr.interfaces.collect(x|newProposal(x.label(),x.id(),x.image()));
+	
+/* proposals for Feature ClusterQMgrBinding::isRepository */
+List[Proposal] completeClusterQMgrBinding_isRepository(Cluster ctx, String prefix) :
+    {}.
+	addAll(ctx.allPossibleQMgrBindingNames().collect(name|newProposal(name,name,"qmgrbinding.gif")))
+;
+
+/* proposals for Feature Cluster::members */
+List[Proposal] completeCluster_members(emf::EObject ctx, String prefix) :
+	  {}. 
+	  addAll(ctx.allPossibleQMgrBindingNames().collect(name|newProposal(name,name,"qmgrbinding.gif"))).
+	  addAll(ctx.allPossibleQMgrBindingNames().collect(name|newProposal("*"+name,"*"+name,"qmgrbinding.gif")))
+;
+
+List[String] allPossibleQMgrBindingNames(emf::EObject ctx) :
+	ctx.allQMgrs().collect(qmgr|qmgr.interfaces.collect(interface|qmgr.label()+"@"+interface.name)).flatten()
+;
+

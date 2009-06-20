@@ -1,0 +1,57 @@
+import mqcfg;
+
+extension org::grassaccords::emqcfg::Extensions;
+
+context QMgr ERROR "Der Name des Queue Manager '"+this.name+"' ist nicht eindeutig." :
+	allQMgrs().select(e|e.name==this.name).size==1
+;
+
+context QMgr WARNING "Der Queue Manager '"+this.name+"' ist keinem Node zugeordnet." :
+	isAssignedToNode()
+;
+
+context QMgr if isMemberOfCluster() ERROR "Der Queue Manager '"+this.name+"' ist einem Cluster aber keinem Node zugeordnet." :
+	isMemberOfCluster()
+;
+
+context QMgr if isAssignedToNode() ERROR "Der Queue Manager '"+this.name+"' darf nur einem Node zugeordnet sein." :
+	!(allNodes().qmgrs.name.select(e|e==this.name).size>1)
+;
+
+context QMgr ERROR "Alles Interfaces eines Queue Managers m¸ssen eindeutige Kombinationen aus Hostname, IP-Adresse und Port sein." :
+	true
+;
+
+context QMgr ERROR "Alle Interfaces eines Queue Managers m¸ssen eindeutige Namen erhalten." :
+	this.interfaces.name.forAll(name1|this.interfaces.name.select(name2|name2==name1).size==1)
+;
+
+context QMgr ERROR "Alle Interfaces eines Queue Managers m¸ssen eindeutig im Sinne des Hostnamens, der IP-Adresse und des verwendeten Ports sein." :
+	this.interfaces.interfaceConnectionName().forAll(name1|this.interfaces.interfaceConnectionName().select(name2|name2==name1).size==1)
+;
+
+
+//Node
+context Node ERROR "Der Name des Nodes '"+this.name+"' ist nicht eindeutig." :
+	allNodes().select(e|e.name==this.name).size==1
+;
+
+context Node if qmgrs.size>0 ERROR "Ein oder mehrere dem Node zugeordnete Queue Manager sind noch anderen Nodes zugeornet." :
+	allNodes().select(e|e.name!=this.name).qmgrs.name.forAll(e|!this.qmgrs.name.contains(e))
+; 
+
+context Node ERROR "Alle Interfaces der Queue Manager, die einem Node zugeordnet sind, m¸ssen eindeutig im Sinne des Hostnamens, der IP-Adresse und des verwendeten Ports sein." :
+	this.qmgrs.interfaces.interfaceConnectionName().forAll(name1|this.qmgrs.interfaces.interfaceConnectionName().select(name2|name2==name1).size==1)
+;
+
+//Cluster
+context Cluster ERROR "Der Name des Clusters '"+this.name+"' ist nicht eindeutig." :
+	allClusters().select(e|e.name==this.name).size==1;
+
+context Cluster if members.size>0 ERROR "Jeder Queue Manager des Clusters muﬂ einem Node zugeordnet sein." :
+	allNodes().qmgrs.name.containsAll(this.members.qmgr.name);
+
+context Channel ERROR "Der Name des Channels '"+this.name+"' ist nicht eindeutig." + this.name :
+	allChannels().select(e|e.name==this.name).size==1;
+
+

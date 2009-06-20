@@ -1,0 +1,100 @@
+node BNode1 {
+ description "Beschreibung BNode1"
+ qmgrs B_X_1
+}
+
+node BNode2 {
+ description "Beschreibung BNode2"
+ qmgrs B_X_2, G_X_2
+}
+
+node ANode1 {
+ description "Beschreibung ANode1"
+ qmgrs W_X_1
+}
+
+node ANode2 {
+ description "Beschreibung ANode2"
+ qmgrs W_X_2
+}
+
+
+node ExtNode {
+ description "Beschreibung ExtNode"
+ qmgrs ExtQMgr
+}
+
+qmgr W_X_1 {
+ description "Beschreibung W_X_1"
+ interface i1 { 
+	host "q1.foo.bar"
+	ip 192.168.10.101
+	port 1414
+ } 
+}
+
+qmgr W_X_2 {
+ description "Beschreibung W_X_1"
+ interface i1 { 
+	host "q1.foo.bar"
+	ip 192.168.10.102
+	port 1414
+ } 
+}
+
+qmgr B_X_1 {
+ description "Broker Queue Manager B_X_1"
+ interface i1 { 
+	host "B_X_1.foo.bar"
+	ip 192.168.20.101
+	port 1414
+ } 
+}
+
+qmgr B_X_2 {
+ description "Broker Queue Manager B_X_2"
+ interface i1 { 
+	host "B_X_2.foo.bar"
+	ip 192.168.20.102
+	port 1414
+ } 
+}
+
+qmgr G_X_2 {
+ description "Gateway Queue Manager G_X_2"
+ interface i1 { 
+	host "G_X_2.foo.bar"
+	ip 192.168.20.103
+	port 1414
+ } 
+ interface i2 { 
+	host "G_X_2.ext.foo.bar"
+	ip 192.168.30.42
+	port 1414
+ } 
+}
+
+qmgr ExtQMgr {
+ description "External B2B Queue Manager ExtQMgr"
+ interface i1 { 
+	host "ExtQMgr.external.foo.bar"
+	ip 10.0.0.42
+	port 1414
+ } 
+}
+
+cluster CL_X_BI_1 {
+	description "Cluster CL_X_BI_1"
+	members *B_X_1@i1, *B_X_2@i1, W_X_1@i1, G_X_2@i1
+}
+
+cluster CL_X_BI_2 {
+	description "Cluster CL_X_BI_2"
+	members *B_X_1@i1, *B_X_2@i1, W_X_2@i1, G_X_2@i1
+}
+
+bidirectional channel GWCHL1 {
+ description ""
+ src G_X_2@ i2
+ dst ExtQMgr@ i1
+}

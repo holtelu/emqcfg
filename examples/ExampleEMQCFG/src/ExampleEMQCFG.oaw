@@ -1,0 +1,13 @@
+<workflow>
+	<property name="modelName" value="model-1"/>
+	<component file='org/grassaccords/emqcfg/generator.oaw'>
+		<modelFile value='${modelName}.mqcfg' />
+		<targetDir value='src-gen/${modelName}' />
+	</component>
+
+	<property name="modelName" value="model-2"/>
+	<component file='org/grassaccords/emqcfg/generator.oaw'>
+		<modelFile value='${modelName}.mqcfg' />
+		<targetDir value='src-gen/${modelName}' />
+	</component>
+</workflow>

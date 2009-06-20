@@ -1,0 +1,9 @@
+import mqcfg;
+
+extension org::grassaccords::emqcfg::Extensions reexport;
+extension org::grassaccords::emqcfg::GenEditorExtensions reexport;
+
+/*
+ * use this file to overwrite the label() and the image()
+ * extension for your model elements
+ */
