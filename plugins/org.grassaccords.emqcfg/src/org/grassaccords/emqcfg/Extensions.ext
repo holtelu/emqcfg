@@ -23,6 +23,21 @@ allQMgrs(emf::EObject this) :
 ; 
 
  /*
+  * Gibt alle Queuemanager zurück, die keinem Node zugeordnet sind.
+  */
+allUnassignedQMgrs(emf::EObject this) :
+	(let ents=allAssignedQMgrs() :
+	allQMgrs().reject(qmgr|ents.exists(e|e.name==qmgr.name)))
+; 
+
+ /*
+  * Gibt alle Queuemanager zurück, die keinem Node zugeordnet sind.
+  */
+allAssignedQMgrs(emf::EObject this) :
+	allNodes().qmgrs
+; 
+
+ /*
   * Gibt alle Qmgr-Bindings zurück.
   */
 allQMgrBindings(emf::EObject this) :
@@ -126,3 +141,5 @@ isAssignedToNode(QMgr this) :
 interfaceConnectionName(Interface this) :
 	this.ip+":"+this.port
 ;
+
+

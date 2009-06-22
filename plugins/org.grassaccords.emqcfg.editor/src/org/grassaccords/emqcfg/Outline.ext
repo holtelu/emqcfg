@@ -16,3 +16,52 @@ extension org::grassaccords::emqcfg::GenOutline reexport;
  * Whitespaces in the name are replaced by '_'
  */
 
+/*
+ * this extension is called when the outline view needs to be updated.
+ * The root element of the parsed model is passed and 
+ * the root element of the outline tree is expected.
+ */
+create UIContentNode outlineTree_intern(emf::EObject model) :
+	setLabel(model.label()) ->
+	setImage(model.image()) ->
+	setContext(model)->
+	model.eContents.collect(e|
+		e.label()!=null ? 
+			children.add(e.outlineTree()) :
+			null);
+
+List[String] viewpoints() :
+	null
+;
+
+create UIContentNode outlineTree(emf::EObject model) :
+	setLabel(model.label()) ->
+	setImage(model.image()) ->
+	setContext(model)->
+	model.allNodes().sortBy(e|e.name).collect(node|node.label()!=null ? children.add(node.outlineTree()):null) ->
+	model.allUnassignedQMgrs().sortBy(e|e.name).collect(qmgr|qmgr.label()!=null ? children.add(qmgr.outlineTree_intern()):null) ->
+	model.allClusters().sortBy(e|e.name).collect(cluster|cluster.label()!=null ? children.add(cluster.outlineTree()):null) ->
+	model.allChannels().sortBy(e|e.name).collect(channel|channel.label()!=null ? children.add(channel.outlineTree()):null)
+	;
+
+create UIContentNode outlineTree(Node node) :
+	setLabel(node.label()) ->
+	setImage(node.image()) ->
+	setContext(node)->
+	node.qmgrs.collect(qmgr|qmgr.label()!=null ? children.add(qmgr.outlineTree_intern()):null)
+	;
+
+create UIContentNode outlineTree(Cluster cluster) :
+	setLabel(cluster.label()) ->
+	setImage(cluster.image()) ->
+	setContext(cluster)->
+	cluster.members.collect(member|member.label()!=null ? children.add(member.outlineTree_intern()):null)
+	;			
+	
+create UIContentNode outlineTree(Channel channel) :
+	setLabel(channel.label()) ->
+	setImage(channel.image()) ->
+	setContext(channel)->
+	children.add(channel.srcQMgr.outlineTree_intern()) ->
+	children.add(channel.dstQMgr.outlineTree_intern())
+	;				

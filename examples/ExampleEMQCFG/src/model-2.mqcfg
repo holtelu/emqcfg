@@ -1,28 +1,29 @@
-node BNode1 {
- description "Beschreibung BNode1"
- qmgrs B_X_1
-}
-
-node BNode2 {
- description "Beschreibung BNode2"
- qmgrs B_X_2, G_X_2
-}
-
-node ANode1 {
- description "Beschreibung ANode1"
+node ApplicationServer1 {
+ description "Beschreibung ApplicationServer1"
  qmgrs W_X_1
 }
 
-node ANode2 {
- description "Beschreibung ANode2"
+node ApplicationServer2 {
+ description "Beschreibung ApplicationServer2"
  qmgrs W_X_2
 }
 
 
-node ExtNode {
- description "Beschreibung ExtNode"
+node ExternalQMgrServer {
+ description "Beschreibung ExternalQMgrServer"
  qmgrs ExtQMgr
 }
+
+node BrokerServer1 {
+ description "Beschreibung BrokerServer1"
+ qmgrs B_X_1 
+}
+
+node BrokerServer2 {
+ description "Beschreibung BrokerServer2"
+ qmgrs B_X_2, G_X_2
+}
+
 
 qmgr W_X_1 {
  description "Beschreibung W_X_1"
@@ -67,7 +68,7 @@ qmgr G_X_2 {
 	ip 192.168.20.103
 	port 1414
  } 
- interface i2 { 
+ interface e2 { 
 	host "G_X_2.ext.foo.bar"
 	ip 192.168.30.42
 	port 1414
@@ -84,17 +85,18 @@ qmgr ExtQMgr {
 }
 
 cluster CL_X_BI_1 {
-	description "Cluster CL_X_BI_1"
+	description "Business integration cluster CL_X_BI_1"
 	members *B_X_1@i1, *B_X_2@i1, W_X_1@i1, G_X_2@i1
 }
 
 cluster CL_X_BI_2 {
-	description "Cluster CL_X_BI_2"
+	description "Business integration cluster CL_X_BI_2"
 	members *B_X_1@i1, *B_X_2@i1, W_X_2@i1, G_X_2@i1
 }
 
-bidirectional channel GWCHL1 {
+bidirectional channel GW_CHL1 {
  description ""
- src G_X_2@ i2
- dst ExtQMgr@ i1
+ src G_X_2@e2
+ dst ExtQMgr@i1
 }
+

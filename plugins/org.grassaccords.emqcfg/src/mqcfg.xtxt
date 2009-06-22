@@ -4,7 +4,7 @@ Model :
 
 Node : "node" name=ID "{"
  "description" description=STRING
- ("qmgrs" qmgrs+=[QMgr] ("," qmgrs+=[QMgr])*)?
+ ("qmgrs" (qmgrs+=[QMgr] ("," qmgrs+=[QMgr])*)?)?
 "}"
 ;
 

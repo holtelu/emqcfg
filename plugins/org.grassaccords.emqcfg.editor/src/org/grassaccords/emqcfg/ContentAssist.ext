@@ -16,33 +16,70 @@ extension org::grassaccords::emqcfg::GenContentAssist reexport;
  * you can sort and/or filter the proposals by overwriting 'List[Proposal] sortProposals(List[Proposal] proposalsToSort)'
  */
 /* proposals for QMgrBinding::qmgr */
-List[Proposal] completeQMgrBinding_qmgr(Channel channel, String prefix) :
-	channel.allVisibleElements().typeSelect(mqcfg::QMgr).collect(x|newProposal(x.label()+"@",x.id()+"@ " ,x.image()));
 
+///////////////////////
+//
+//  Node proposals
+//
+///////////////////////
+/* proposals for Node::qmgrs */
+List[Proposal] completeNode_qmgrs(Node node, String prefix) :
+//	node.allQMgrs().select(qmgr|!node.qmgrs.exists(e|e.name==qmgr.name)).collect(x|newProposal(x.label(),x.id(),x.image()));
+	node.allUnassignedQMgrs().collect(x|newProposal(x.label(),x.id(),x.image()));
+
+
+///////////////////////
+//
+//  Channel proposals
+//
+///////////////////////
+List[Proposal] completeQMgrBinding_qmgr(Channel channel, String prefix) :
+	  {}. 
+	  addAll(channel.allPossibleQMgrBindingNames().collect(name|newProposal(name,name,"qmgrbinding.gif")));
+
+///////////////////////
+//
+//  QMgrBinding proposals
+//
+///////////////////////
 /* proposals for QMgrBinding::interface */
 List[Proposal] completeQMgrBinding_interface(QMgrBinding binding, String prefix) :
 	binding.qmgr.interfaces.collect(x|newProposal(x.label(),x.id(),x.image()));
 
+///////////////////////
+//
+//  QMgrBinding proposals
+//
+///////////////////////
 /* proposals for ClusterQMgrBinding::qmgr */
 List[Proposal] completeClusterQMgrBinding_qmgr(emf::EObject ctx, String prefix) :
-	ctx.allVisibleElements().typeSelect(mqcfg::QMgr).collect(x|newProposal(x.label()+"@",x.id()+"@ ",x.image()));
-
-/* proposals for ClusterQMgrBinding::interface */
-List[Proposal] completeClusterQMgrBinding_interface(ClusterQMgrBinding binding, String prefix) :
-	binding.qmgr.interfaces.collect(x|newProposal(x.label(),x.id(),x.image()));
+	ctx.allQMgrs().collect(x|newProposal(x.label()+"@",x.id()+"@ ",x.image()));
 	
+
+///////////////////////
+//
+//  Cluster proposals
+//
+///////////////////////
+/* proposals for Feature Cluster::members */
+List[Proposal] completeCluster_members(Cluster ctx, String prefix) :
+	  {}. 
+	  addAll(ctx.allPossibleQMgrBindingNames().collect(name|newProposal(name,name,"qmgrbinding.gif"))).
+	  addAll(ctx.allPossibleQMgrBindingNames().collect(name|newProposal("*"+name,"*"+name,"qmgrbinding.gif")))
+;
+
+//???
 /* proposals for Feature ClusterQMgrBinding::isRepository */
 List[Proposal] completeClusterQMgrBinding_isRepository(Cluster ctx, String prefix) :
     {}.
 	addAll(ctx.allPossibleQMgrBindingNames().collect(name|newProposal(name,name,"qmgrbinding.gif")))
 ;
 
-/* proposals for Feature Cluster::members */
-List[Proposal] completeCluster_members(emf::EObject ctx, String prefix) :
-	  {}. 
-	  addAll(ctx.allPossibleQMgrBindingNames().collect(name|newProposal(name,name,"qmgrbinding.gif"))).
-	  addAll(ctx.allPossibleQMgrBindingNames().collect(name|newProposal("*"+name,"*"+name,"qmgrbinding.gif")))
-;
+
+/* proposals for ClusterQMgrBinding::interface */
+List[Proposal] completeClusterQMgrBinding_interface(ClusterQMgrBinding binding, String prefix) :
+	binding.qmgr.interfaces.collect(x|newProposal(x.label(),x.id(),x.image()));
+
 
 List[String] allPossibleQMgrBindingNames(emf::EObject ctx) :
 	ctx.allQMgrs().collect(qmgr|qmgr.interfaces.collect(interface|qmgr.label()+"@"+interface.name)).flatten()
