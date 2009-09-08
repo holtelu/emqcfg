@@ -1,0 +1,33 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.grassaccords.emqcfg
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0
+Bundle-SymbolicName: org.grassaccords.emqcfg; singleton:=true
+Eclipse-RegisterBuddy: org.eclipse.xtext.log4j
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext,
+ org.eclipse.xtext.generator;resolution:=optional,
+ de.itemis.xtext.antlr;resolution:=optional,
+ org.apache.commons.logging;resolution:=optional,
+ org.eclipse.emf.codegen.ecore;resolution:=optional,
+ org.eclipse.xtext.log4j;resolution:=optional,
+ org.eclipse.emf.mwe.utils;resolution:=optional,
+ org.eclipse.emf.mwe.core;resolution:=optional,
+ com.ibm.icu;resolution:=optional,
+ org.eclipse.xtext.xtend;resolution:=optional,
+ org.eclipse.xtext.util,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.common,
+ org.antlr.runtime,
+ org.eclipse.xtend
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: org.grassaccords.emqcfg,
+ org.grassaccords.emqcfg.mQCfg,
+ org.grassaccords.emqcfg.mQCfg.impl,
+ org.grassaccords.emqcfg.mQCfg.util,
+ org.grassaccords.emqcfg.parseTreeConstruction,
+ org.grassaccords.emqcfg.parser.antlr,
+ org.grassaccords.emqcfg.services,
+ org.grassaccords.emqcfg.util,
+ org.grassaccords.emqcfg.validation
