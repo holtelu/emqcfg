@@ -1,0 +1,38 @@
+«IMPORT mQCfg»
+«EXTENSION templates::MQ»
+
+////////////////////////////////////
+/// cluster channel definitions
+////////////////////////////////////
+
+«DEFINE clusterchannels FOR QMgr-»
+	«FILE nodeScriptsBaseFolder()+"/"+fileNameDefClusterChannels()»
+		«IF isRepoQMgr()-»
+//repository queue manager definition	
+DEFINE NAMELIST('CL_RPOS_NAMELIST')	+
+       NAMES(«FOREACH this.qmgrRepo() AS cluster SEPARATOR ','»'«cluster.name»'«ENDFOREACH») +
+       REPLACE
+       
+alter qmgr repos('') reposnl('CL_RPOS_NAMELIST')
+
+			«FOREACH this.qmgrClusterBindings() AS binding-»
+				«LET binding.qmgr.name+"_"+binding.interface.name AS uniqueName-»
+DEFINE NAMELIST('CL_«uniqueName»_RCV_NAMELIST') +
+	   NAMES(«FOREACH binding.cluster() AS cluster SEPARATOR ','»'«cluster.name»'«ENDFOREACH») + 
+	   REPLACE
+	   
+DEFINE CHANNEL('TO.«uniqueName»') +
+	   CHLTYPE(CLUSRCVR) +
+       TRPTYPE(TCP) +
+	   CONNAME('«binding.interface.host»(«binding.interface.port»)') +
+	   CLUSNL('CL_«uniqueName»_RCV_NAMELIST') +
+	   CLUSTER('') +
+	   MCAUSER('mqm') +
+	   REPLACE
+				«ENDLET-»		
+			«ENDFOREACH-»	
+		«ENDIF-»
+	«ENDFILE»
+«ENDDEFINE»
+
+

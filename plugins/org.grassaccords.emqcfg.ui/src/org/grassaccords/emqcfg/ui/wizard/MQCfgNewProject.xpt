@@ -1,0 +1,102 @@
+«IMPORT org::grassaccords::emqcfg::ui::wizard»
+
+«DEFINE main FOR MQCfgProjectInfo»
+«EXPAND model FOR this»
+«EXPAND workflow FOR this»
+«ENDDEFINE»
+
+«DEFINE model FOR MQCfgProjectInfo»
+«FILE "src/Model.mqcfg"-»
+name "Example"
+
+node Node1 {
+ description "Node1"
+ qmgrs Q1, Q2
+}
+
+node Node2 {
+ description "Node2"
+ qmgrs Q3
+}
+
+node Node3 {
+ description "Node3"
+ qmgrs Q4
+}
+
+qmgr Q1 {
+ description "Q1"
+ interface i1 { 
+	host "q1.foo.bar"
+	ip 192.168.0.100
+	port 1414
+ } 
+}
+
+qmgr Q2 {
+ description "Q2"
+ interface i1 { 
+	host "q2.foo.bar"
+	ip 192.168.0.100
+	port 1415
+ } 
+}
+
+qmgr Q3 {
+ description "Q3"
+ interface i1 { 
+	host "q3.foo.bar"
+	ip 192.168.0.100
+	port 1416
+ } 
+ interface i2 { 
+	host "q3.sub.foo.bar"
+	ip 192.168.100.103
+	port 1414
+ } 
+}
+
+qmgr Q4 {
+ description "Q4"
+ interface i1 { 
+	host "q4.sub.foo.bar"
+	ip 192.168.10.104
+	port 1414
+ } 
+}
+
+
+bidirectional channel Chl1 {
+	description "Chl1"
+	src Q1@ i1
+	dst Q2@ i1
+}
+
+
+cluster Cl1 {
+	description "Cluster Cl1"
+	members *Q2@i1, *Q3@i1
+}
+
+cluster Cl2 {
+	description "Cluster Cl1"
+	members *Q3@i2, *Q4@i1
+}
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE workflow FOR MQCfgProjectInfo»
+«FILE "src/Generator.mwe"-»
+<workflow>
+	<property name="modelFile" value="classpath:/Model.mqcfg"/>
+	<property name="targetDir" value="src-gen"/>
+
+	<component file="workflow/MQCfgGenerator.mwe">
+		<modelFile value="${modelFile}"/>
+		<targetDir value="${targetDir}"/>
+	</component>
+</workflow>
+«ENDFILE»
+«ENDDEFINE»
+«ENDFILE»
+«ENDDEFINE»

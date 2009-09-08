@@ -1,0 +1,72 @@
+name "Example"
+
+node Node1 {
+ description "Node1"
+ qmgrs Q1,Q2,Q3
+}
+
+
+qmgr Q1 {
+ description "Q1"
+ interface i1 { 
+	host "q1.foo.bar"
+	ip 192.168.0.100
+	port 1414
+ } 
+}
+
+qmgr Q2 {
+ description "Q2"
+ interface i1 { 
+	host "q2.foo.bar"
+	ip 192.168.0.100
+	port 1415
+ } 
+}
+
+qmgr Q3 {
+ description "Q3"
+ interface i1 { 
+	host "q3.foo.bar"
+	ip 192.168.0.100
+	port 1416
+ } 
+}
+
+//Warning : Q4 is not assigned to a node
+qmgr Q4 {
+ description "Q4"
+ interface i1 { 
+	host "q3.foo.bar"
+	ip 192.168.0.100
+	port 1417
+ } 
+}
+
+//OK
+cluster Cl1 {
+	description "Cluster Cl1"
+	members *Q1@i1,*Q2@i1,Q3@i1
+}
+
+//Warning : Cluster should have at least two repositories
+cluster Cl2 {
+	description "Cluster Cl2"
+	members *Q1@i1,Q2@i1
+}
+
+//Error   : Cluster must have at least one repository
+//Warning : Cluster should have at least two repositories
+cluster Cl3 {
+	description "Cluster Cl3"
+	members Q1@i1,Q2@i1,Q3@i1
+}
+
+//Error   : Q4 is a member, but not assigned to a node
+cluster Cl4 {
+	description "Cluster Cl4"
+	members *Q1@i1,*Q2@i1,Q4@i1
+}
+
+
+

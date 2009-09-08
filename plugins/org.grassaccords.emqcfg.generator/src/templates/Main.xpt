@@ -1,0 +1,9 @@
+«IMPORT mQCfg»
+«EXTENSION org::grassaccords::emqcfg::xtend::Extensions»
+ 
+«DEFINE main FOR Model»
+   	«FOREACH allNodes() AS node»
+		«EXPAND Node::main FOR node»
+	«ENDFOREACH»
+	«EXPAND Documentation::main FOR this»
+«ENDDEFINE»

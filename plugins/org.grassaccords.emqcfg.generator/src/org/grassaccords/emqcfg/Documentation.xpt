@@ -1,7 +1,0 @@
-«IMPORT mqcfg»
-«EXTENSION org::grassaccords::emqcfg::Extensions»
- 
-«DEFINE main FOR Model»
-	«EXPAND QMgrBindingView::dotfile FOR this»
-«ENDDEFINE»
-

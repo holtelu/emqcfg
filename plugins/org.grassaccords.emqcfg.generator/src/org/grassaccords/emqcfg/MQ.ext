@@ -1,5 +1,0 @@
-import mqcfg;
-
-extension org::grassaccords::emqcfg::Extensions reexport;
-extension org::grassaccords::emqcfg::BaseMQ reexport;
-

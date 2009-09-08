@@ -1,0 +1,5 @@
+import mQCfg;
+
+extension org::grassaccords::emqcfg::xtend::Extensions reexport;
+extension templates::BaseMQ reexport;
+

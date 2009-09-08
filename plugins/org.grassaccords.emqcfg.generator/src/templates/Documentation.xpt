@@ -1,0 +1,7 @@
+«IMPORT mQCfg»
+«EXTENSION templates::Extensions»
+ 
+«DEFINE main FOR Model»
+	«EXPAND QMgrBindingView::dotfile FOR this»
+«ENDDEFINE»
+

@@ -1,9 +1,0 @@
-«IMPORT mqcfg»
-«EXTENSION org::grassaccords::emqcfg::Extensions»
- 
-«DEFINE main FOR Model»
-   	«FOREACH this.nodes AS node»
-		«EXPAND Node::main FOR node»
-	«ENDFOREACH»
-	«EXPAND Documentation::main FOR this»
-«ENDDEFINE»

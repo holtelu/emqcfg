@@ -1,7 +1,0 @@
-«IMPORT mqcfg»
-
-«DEFINE main FOR Node»
-	«FOREACH qmgrs AS qmgr»
-		«EXPAND QMgr::main FOR qmgr»
-	«ENDFOREACH»
-«ENDDEFINE»

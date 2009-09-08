@@ -1,0 +1,82 @@
+«IMPORT mQCfg»
+«EXTENSION templates::MQ»
+
+////////////////////////////////////
+/// channel definitions
+////////////////////////////////////
+
+«DEFINE channels FOR QMgr-»
+«FILE nodeScriptsBaseFolder()+"/"+fileNameDefChannels()»
+DEFINE CHANNEL('SYSTEM.ADMIN.SVRCONN') +
+       CHLTYPE(SVRCONN) +
+       MCAUSER('mqm') +
+       REPLACE
+       
+«FOREACH this.qmgrSrcChannels() AS channel-»
+-- define transmit queue for channel «channel.name»      
+DEFINE QLOCAL(«channel.mqXmitQName()») +
+       USAGE(XMITQ) + 
+       INITQ(SYSTEM.CHANNEL.INITQ) +
+       TRIGGER +
+       TRIGTYPE(FIRST)+
+       TRIGDATA(«channel.mqChannelName()») + 
+       DEFPSIST(YES) + 
+       MAXDEPTH(640000) +
+       MAXMSGL(10194304) +
+       REPLACE
+
+-- define sender channel for channel «channel.name»      
+DEFINE CHANNEL(«channel.mqChannelName()») + 
+       CHLTYPE(SDR) +
+       CONNAME('«channel.mqReceiverConnectionName()»') +
+       TRPTYPE(TCP) +
+       XMITQ(«channel.mqXmitQName()») +
+       MCAUSER('mqm') +
+       REPLACE
+«IF channel.bidirectional-»
+
+-- define reverse receiver channel for channel «channel.name»      
+DEFINE CHANNEL(«channel.mqReverseChannelName()») + 
+       CHLTYPE(RCVR) + 
+       TRPTYPE(TCP) +
+       MCAUSER('mqm') + 
+       REPLACE
+       
+«ENDIF-»
+«ENDFOREACH-»
+
+«FOREACH this.qmgrDstChannels() AS channel-»
+-- define receiver channel for channel «channel.name»      
+DEFINE CHANNEL(«channel.mqChannelName()») + 
+       CHLTYPE(RCVR) + 
+       TRPTYPE(TCP) +
+       MCAUSER('mqm') + 
+       REPLACE
+
+«IF channel.bidirectional-»
+-- define reverse transmit queue for channel «channel.name»      
+DEFINE QLOCAL(«channel.mqReverseXmitQName()») +
+       USAGE(XMITQ) + 
+       INITQ(SYSTEM.CHANNEL.INITQ) +
+       TRIGGER +
+       TRIGTYPE(FIRST)+
+       TRIGDATA(«channel.mqReverseChannelName()») + 
+       DEFPSIST(YES) + 
+       MAXDEPTH(640000) +
+       MAXMSGL(10194304) +
+       REPLACE
+
+-- define reverse sender channel for channel «channel.name»      
+DEFINE CHANNEL(«channel.mqReverseChannelName()») + 
+       CHLTYPE(SDR) +
+       CONNAME('«channel.mqReverseReceiverConnectionName()»') +
+       TRPTYPE(TCP) +
+       XMITQ(«channel.mqXmitQName()») +
+       MCAUSER('mqm') +
+       REPLACE
+«ENDIF-»
+		«ENDFOREACH-»
+	«ENDFILE»
+	
+«ENDDEFINE»
+
