@@ -85,4 +85,12 @@ public final class MQCfgUtil {
 		return repositoryQMgrBinding;
 	}
 
+	public static List<QMgr> allUnassignedQMgrs(Node node) {
+		List<QMgr> unassignedQMgrs=allQMgrs(node);
+		for (Node tmpNode : all(node, Node.class)) {
+			unassignedQMgrs.removeAll(tmpNode.getQmgrs());
+		}
+		return unassignedQMgrs;
+	}
+
 }
