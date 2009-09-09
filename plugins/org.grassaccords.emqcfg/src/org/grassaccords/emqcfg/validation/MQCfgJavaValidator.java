@@ -1,5 +1,6 @@
 package org.grassaccords.emqcfg.validation;
 
+import static ch.lambdaj.Lambda.*;
 import static org.grassaccords.emqcfg.util.MQCfgUtil.*;
 
 import java.util.ArrayList;
@@ -32,28 +33,25 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 
 public class MQCfgJavaValidator extends AbstractMQCfgJavaValidator {
-	
-	private static Log LOG=LogFactory.getLog(MQCfgJavaValidator.class);
+
+	private static Log LOG = LogFactory.getLog(MQCfgJavaValidator.class);
 
 	private class MQCfgValidationMessageExceptor implements
 			ValidationMessageAcceptor2 {
-		@Override
 		public void acceptWarning(String message, EObject object,
 				Integer feature) {
 			State state = getStateAccess().getState();
-			state.chain.add(new MQCfgDiagnostic(Diagnostic.WARNING, 0,
-					message, object, feature, state.currentCheckType));
+			state.chain.add(new MQCfgDiagnostic(Diagnostic.WARNING, 0, message,
+					object, feature, state.currentCheckType));
 		}
 
-		@Override
 		public void acceptError(String message, EObject object, Integer feature) {
 			State state = getStateAccess().getState();
 			state.hasErrors = true;
-			state.chain.add(new MQCfgDiagnostic(Diagnostic.ERROR, 0,
-					message, object, feature, state.currentCheckType));
+			state.chain.add(new MQCfgDiagnostic(Diagnostic.ERROR, 0, message,
+					object, feature, state.currentCheckType));
 		}
 
-		@Override
 		public void acceptError(EObject object, Integer feature, int code,
 				String message, Object... parameter) {
 			State state = getStateAccess().getState();
@@ -63,7 +61,6 @@ public class MQCfgJavaValidator extends AbstractMQCfgJavaValidator {
 					state.currentCheckType));
 		}
 
-		@Override
 		public void acceptWarning(EObject object, Integer feature, int code,
 				String message, Object... parameter) {
 			State state = getStateAccess().getState();
@@ -76,7 +73,7 @@ public class MQCfgJavaValidator extends AbstractMQCfgJavaValidator {
 			try {
 				return String.format(message, parameter);
 			} catch (IllegalFormatException e) {
-				LOG.error("Could not format the message '"+message+"'.");
+				LOG.error("Could not format the message '" + message + "'.");
 				return message;
 			}
 		}
@@ -98,7 +95,6 @@ public class MQCfgJavaValidator extends AbstractMQCfgJavaValidator {
 		return stateAccess;
 	}
 
-
 	protected void warning(EObject source, Integer feature, int code,
 			String message, Object... para) {
 		validationMessageAcceptor.acceptWarning(source, feature, code, message,
@@ -111,8 +107,6 @@ public class MQCfgJavaValidator extends AbstractMQCfgJavaValidator {
 				para);
 	}
 
-	
-	
 	@Check
 	public void checkQMgrsNoAndDuplicateAssignment(Model model) {
 		List<QMgr> allQMgrs = allQMgrs(model);
@@ -146,47 +140,33 @@ public class MQCfgJavaValidator extends AbstractMQCfgJavaValidator {
 	}
 
 	private Iterable<String> computeNodeNameList(Collection<Node> nodes) {
-		Iterable<String> nodeNameList = Iterables.transform(nodes,
-				new Function<Node, String>() {
-					@Override
-					public String apply(Node from) {
-						return from.getName();
-					}
-				});
-		return nodeNameList;
+		return collect(nodes, on(Node.class).getName());
 	}
 
 	@Check
 	public void checkTopLevelElementsForDuplicateNames(Model m) {
-		// get all types of the model
 		List<TopLevelType> types = m.getElements();
-		// for each name store the element of its first occurrence
-		Map<String, TopLevelType> firstOccurrenceOfName = new HashMap<String, TopLevelType>();
-		// the set of duplicate names
-		Set<String> duplicateNames = new HashSet<String>();
-
-		// iterate (once!) over all types in the model
-		for (TopLevelType t : types) {
-			String name = t.getName();
-			// if the name already occurred we have
-			// a duplicate name and hence an error
-			if (firstOccurrenceOfName.get(name) != null) {
-				duplicateNames.add(name);
-				// note the second parameter t
-				// it is essential difference to the first example
-				error(t, MQCfgPackage.TOP_LEVEL_TYPE__NAME, 0,
-						"%1$s: The name is not unique in the scope of the model.", name);
-			}
-			// otherwise store the name as first occurrence
-			else {
-				firstOccurrenceOfName.put(name, t);
+		Map<String, TopLevelType> firstOccurrenceOfNameMap = new HashMap<String, TopLevelType>();
+		Set<String> duplicateNamesSet = new HashSet<String>();
+		for (TopLevelType element : types) {
+			String elementName = element.getName();
+			if (firstOccurrenceOfNameMap.containsKey(elementName)) {
+				duplicateNamesSet.add(elementName);
+				error(
+						element,
+						MQCfgPackage.TOP_LEVEL_TYPE__NAME,
+						0,
+						"%1$s: The name is not unique in the scope of the model.",
+						elementName);
+			} else {
+				firstOccurrenceOfNameMap.put(elementName, element);
 			}
 		}
-		// now create the error for the first occurrence of a duplicate name
-		for (String s : duplicateNames) {
-			error(firstOccurrenceOfName.get(s),
-					MQCfgPackage.TOP_LEVEL_TYPE__NAME, 0, "%1$s: The name is not unique in the scope of the model.",
-					s);
+		for (String duplicateName : duplicateNamesSet) {
+			error(firstOccurrenceOfNameMap.get(duplicateName),
+					MQCfgPackage.TOP_LEVEL_TYPE__NAME, 0,
+					"%1$s: The name is not unique in the scope of the model.",
+					duplicateName);
 		}
 	}
 
@@ -209,7 +189,6 @@ public class MQCfgJavaValidator extends AbstractMQCfgJavaValidator {
 	public void checkForDuplicateInterfaceNames(final QMgr qmgr) {
 		Iterable<String> interfaceNames = Iterables.transform(qmgr
 				.getInterfaces(), new Function<Interface, String>() {
-			@Override
 			public String apply(Interface from) {
 				return from.getName();
 			}
@@ -341,7 +320,8 @@ public class MQCfgJavaValidator extends AbstractMQCfgJavaValidator {
 			}
 			for (Interface currentInterface : errorList) {
 				error(currentInterface, MQCfgPackage.INTERFACE, 0,
-						"%1$s: A hostname cannot have multiple IPs.", currentInterface.getName());
+						"%1$s: A hostname cannot have multiple IPs.",
+						currentInterface.getName());
 			}
 		}
 	}

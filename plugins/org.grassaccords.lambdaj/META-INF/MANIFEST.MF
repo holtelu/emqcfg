@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Lambdaj
+Bundle-SymbolicName: org.grassaccords.lambdaj
+Bundle-Version: 2.0.0.qualifier
+Bundle-ClassPath: lambdaj-2.0-with-dependencies.jar
+Export-Package: ch.lambdaj,
+ org.hamcrest
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

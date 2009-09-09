@@ -1,25 +1,54 @@
 package org.grassaccords.emqcfg.junit.validation;
 
-import java.io.InputStream;
+import static ch.lambdaj.Lambda.*;
+import static org.hamcrest.Matchers.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
-
+import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.DiagnosticChain;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.MweReader;
-import org.eclipse.xtext.parsetree.CompositeNode;
-import org.eclipse.xtext.resource.XtextResource;
 import org.grassaccords.emqcfg.MQCfgStandaloneSetup;
-import org.grassaccords.emqcfg.junit.AbstractXtextTests;
+import org.grassaccords.emqcfg.junit.AbstractMQCfgXtextTests;
 import org.grassaccords.emqcfg.mQCfg.Cluster;
+import org.grassaccords.emqcfg.mQCfg.Model;
 import org.grassaccords.emqcfg.util.MQCfgUtil;
 import org.grassaccords.emqcfg.validation.MQCfgJavaValidator;
 
-public class SimpleValidationTest extends AbstractXtextTests {
+public class SimpleValidationTest extends AbstractMQCfgXtextTests {
+
+	public static class TestDiagnosticChain implements DiagnosticChain, Iterable<Diagnostic>{
+		private List<Diagnostic> diagnosticList=new ArrayList<Diagnostic>();
+
+		public boolean isEmpty() {
+			return diagnosticList.isEmpty();
+		}
+
+		public void add(org.eclipse.emf.common.util.Diagnostic diagnostic) {
+			diagnosticList.add(diagnostic);
+		}
+
+		public void addAll(org.eclipse.emf.common.util.Diagnostic diagnostic) {
+			throw new UnsupportedOperationException();
+		}
+
+		public void merge(org.eclipse.emf.common.util.Diagnostic diagnostic) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public String toString() {
+			return diagnosticList.toString();
+		}
+
+		@Override
+		public Iterator<Diagnostic> iterator() {
+			return diagnosticList.iterator();
+		}
+	}
 
 	private MQCfgJavaValidator validator;
 	
@@ -32,51 +61,25 @@ public class SimpleValidationTest extends AbstractXtextTests {
 		validator=get(MQCfgJavaValidator.class);
 	}
 	
-	public void testSimple() throws Exception {
-		
-	}
-	
-	
 	public void testAllClusterChecks() throws Exception {
-		InputStream is=this.getClass().getResourceAsStream("ClusterChecks.mqcfg");
-		assertNotNull(is);
-		XtextResource resource = getResource(is);
-		
-		EObject object = resource.getParseResult().getRootASTElement();
-		assertNotNull( object );
+		Model model = readModelFromClasspath(Model.class);
+
+		assertNotNull( model );
 		
 		Map<Object, Object> context=new HashMap<Object, Object>();
-		DiagnosticChain diagnostics=new DiagnosticChain() {
-			private final List<Integer> integers = new ArrayList<Integer>();
-
-			public boolean isEmpty() {
-				return integers.isEmpty();
-			}
-
-			public void add(org.eclipse.emf.common.util.Diagnostic diagnostic) {
-				System.out.println(diagnostic);
-				Assert.assertTrue(diagnostic.getData().get(0) instanceof EObject);
-				integers.add((Integer) diagnostic.getData().get(1));
-			}
-
-			public void addAll(org.eclipse.emf.common.util.Diagnostic diagnostic) {
-				throw new UnsupportedOperationException();
-			}
-
-			public void merge(org.eclipse.emf.common.util.Diagnostic diagnostic) {
-				throw new UnsupportedOperationException();
-			}
-
-			@Override
-			public String toString() {
-				return integers.toString();
-			}
-		};
-		List<Cluster> allCluster = MQCfgUtil.allCluster(object);
+		TestDiagnosticChain diagnostics=new TestDiagnosticChain();
+		List<Cluster> allCluster = MQCfgUtil.allCluster(model);
 		for (Cluster cluster : allCluster) {
 			validator.validate(cluster, diagnostics, context);
 		}
-		System.out.println(diagnostics.toString());
+		List<Diagnostic> errorsList = filter(having(on(Diagnostic.class).getSeverity(),equalTo(Diagnostic.ERROR)), diagnostics);
+		List<Diagnostic> warningsList = filter(having(on(Diagnostic.class).getSeverity(),equalTo(Diagnostic.WARNING)), diagnostics);
+		
+		List<Diagnostic> sortedList = sort(diagnostics, on(Diagnostic.class).getMessage());
+		for (Diagnostic object : sortedList) {
+			System.out.println(object.getMessage());
+		}
+		
 	}
 	
 	

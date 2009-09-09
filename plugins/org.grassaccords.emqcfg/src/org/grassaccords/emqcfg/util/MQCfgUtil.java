@@ -53,7 +53,6 @@ public final class MQCfgUtil {
 	public static boolean isAssignedToANode(final QMgr qmgr) {
 		Iterable<Node> listHostingNodes = Iterables.filter(all(qmgr, Node.class),
 				new Predicate<Node>() {
-					@Override
 					public boolean apply(Node input) {
 						return input.getQmgrs().contains(qmgr);
 					}
@@ -64,11 +63,9 @@ public final class MQCfgUtil {
 	public static boolean isMemberOfCluster(final QMgr qmgr) {
 		Iterable<Cluster> listHostingNodes = Iterables.filter(all(qmgr, Cluster.class),
 				new Predicate<Cluster>() {
-					@Override
 					public boolean apply(Cluster input) {
 						return Iterables.size(Iterables.filter(input.getMembers(),
 								new Predicate<ClusterQMgrBinding>() {
-							@Override
 							public boolean apply(ClusterQMgrBinding input) {
 								return input.getQmgr().equals(qmgr);
 							}
@@ -81,7 +78,6 @@ public final class MQCfgUtil {
 	public static Iterable<ClusterQMgrBinding> allRepositoryQMgrBindings(
 			final Cluster cluster) {
 		Iterable<ClusterQMgrBinding> repositoryQMgrBinding = Iterables.filter(cluster.getMembers(),new Predicate<ClusterQMgrBinding>() {
-			@Override
 			public boolean apply(ClusterQMgrBinding input) {
 				return input.isIsRepository();
 			}
