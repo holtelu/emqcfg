@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+	<template name="node" description="creates a node"
+		id="org.grassaccords.emqcfg.templates.node"
+		context="org.grassaccords.emqcfg.MQCfg.kw_node"
+		enabled="true">node ${name} {
+	description "${description}"
+	qmgrs ${cursor}
+}
+	</template>
+	<template name="qmgr" description="creates a qmgr"
+		id="org.grassaccords.emqcfg.templates.qmgr"
+		context="org.grassaccords.emqcfg.MQCfg.kw_qmgr"
+		enabled="true">qmgr ${name} {
+	description "queue manager ${name}"
+	interface i1 { 
+		host "${host}"
+		ip ${ip}
+		port ${port}
+	}
+	</template>
+	<template name="interface" description="creates a interface"
+		id="org.grassaccords.emqcfg.templates.interface"
+		context="org.grassaccords.emqcfg.MQCfg.kw_interface"
+		enabled="true">interface ${name} {
+	host "${host}"
+	ip ${ip}
+	port ${port}
+}
+	</template>
+	<template autoinsert="true"
+		context="org.grassaccords.emqcfg.MQCfg.kw_channel" deleted="false"
+		id="org.grassaccords.emqcfg.templates.channel"
+		description="creates a channel"
+		enabled="true"
+		name="channel">channel ${name} {
+		description "channel ${name}"
+	src ${cursor}
+	dst ${cursor}
+}
+	</template>
+	<template autoinsert="true"
+		context="org.grassaccords.emqcfg.MQCfg.kw_cluster" deleted="false"
+		id="org.grassaccords.emqcfg.templates.cluster"
+		description="creates a cluster"
+		enabled="true"
+		name="cluster">cluster ${name} {
+	description "Cluster ${name}"
+	members ${cursor}
+}
+	</templates>
