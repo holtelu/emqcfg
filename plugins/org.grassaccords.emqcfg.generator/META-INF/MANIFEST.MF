@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.grassaccords.emqcfg.generator
 Bundle-Vendor: My Company
-Bundle-Version: 1.0.0
+Bundle-Version: 0.6.0.qualifier
 Bundle-SymbolicName: org.grassaccords.emqcfg.generator; singleton:=true
 Eclipse-RegisterBuddy: org.eclipse.xtext.log4j
 Bundle-ActivationPolicy: lazy
-Require-Bundle:  org.grassaccords.emqcfg;visibility:=reexport,
+Require-Bundle: org.grassaccords.emqcfg;visibility:=reexport,
  org.eclipse.xpand;visibility:=reexport,
  org.eclipse.xtend;visibility:=reexport,
  org.eclipse.xtext;visibility:=reexport,

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.grassaccords.emqcfg.feature_0.6.0.200909121454.jar" id="org.grassaccords.emqcfg.feature" version="0.6.0.200909121454">
+      <category name="org.grassaccords.emqcfg.category"/>
+   </feature>
+   <category-def name="org.grassaccords.emqcfg.category" label="eMQCfg">
+      <description>
+         This is an Eclipse text based WebSphere MQ environment configuration editor.
+It uses oAW Xtext to define a DSL for describing MQ environments. With a concrete model you can generate all artifacts (scripts, documentation) needed to create the complete environment.
+      </description>
+   </category-def>
+</site>

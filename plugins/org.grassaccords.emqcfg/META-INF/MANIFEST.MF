@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.grassaccords.emqcfg
 Bundle-Vendor: My Company
-Bundle-Version: 1.0.0
+Bundle-Version: 0.6.0.qualifier
 Bundle-SymbolicName: org.grassaccords.emqcfg; singleton:=true
 Eclipse-RegisterBuddy: org.eclipse.xtext.log4j
 Bundle-ActivationPolicy: lazy
@@ -21,7 +21,7 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.emf.common,
  org.antlr.runtime,
  org.eclipse.xtend,
- org.grassaccords.lambdaj;bundle-version="2.0.0";visibility:=reexport
+ org.grassaccords.lambdaj;visibility:=reexport
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.grassaccords.emqcfg,
  org.grassaccords.emqcfg.mQCfg,
