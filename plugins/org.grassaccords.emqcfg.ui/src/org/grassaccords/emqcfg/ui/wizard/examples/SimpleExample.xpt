@@ -1,0 +1,63 @@
+«IMPORT org::grassaccords::emqcfg::ui::wizard»
+«IMPORT org::grassaccords::emqcfg::ui::wizard::examples»
+
+«DEFINE main FOR MQCfgProjectInfo»
+«EXPAND model FOR this»
+«EXPAND workflow FOR this»
+«ENDDEFINE»
+
+«DEFINE model FOR MQCfgProjectInfo»
+«FILE "src/examples/simple/Model.mqcfg"-»
+name "Simple Example"
+
+node Node1 {
+ description "Node1"
+ qmgrs Q1
+}
+
+node Node2 {
+ description "Node2"
+ qmgrs Q2
+}
+
+
+qmgr Q1 {
+ description "Q1"
+ interface i1 { 
+	host "q1.foo.bar"
+	ip 192.168.0.101
+	port 1414
+ } 
+}
+
+qmgr Q2 {
+ description "Q2"
+ interface i1 { 
+	host "q2.foo.bar"
+	ip 192.168.0.102
+	port 1414
+ } 
+}
+
+bidirectional channel Chl1 {
+		description "channel name"
+	src Q1@i1
+	dst Q2@i1
+}
+«ENDFILE»
+«ENDDEFINE»
+
+
+«DEFINE workflow FOR MQCfgProjectInfo»
+«FILE "src/examples/simple/Generator.mwe"-»
+<workflow>
+	<property name="modelFile" value="classpath:/examples/simple/Model.mqcfg"/>
+	<property name="targetDir" value="src-gen-examples/simple"/>
+
+	<component file="workflow/MQCfgGenerator.mwe">
+		<modelFile value="${modelFile}"/>
+		<targetDir value="${targetDir}"/>
+	</component>
+</workflow>
+«ENDFILE»
+«ENDDEFINE»
