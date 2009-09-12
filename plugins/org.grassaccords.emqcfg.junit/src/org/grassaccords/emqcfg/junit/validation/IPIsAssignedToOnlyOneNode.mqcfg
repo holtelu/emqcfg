@@ -1,0 +1,41 @@
+name "IPIsAssignedToOnlyOneNode"
+
+node Node1 {
+ description "Node1"
+ qmgrs Q1
+}
+
+node Node2 {
+ description "Node2"
+ qmgrs Q2
+}
+
+//Error: The IP of interface i1 is assigned to more than one node [Node1,Node2]
+qmgr Q1 {
+ description "Q1"
+ interface i1 { 
+	host "q1.foo.bar"
+	ip 192.168.0.100
+	port 1414
+ } 
+ interface i2 { 
+	host "q1.foo.bar"
+	ip 192.168.0.100
+	port 1415
+ } 
+}
+
+//Error: The IP of interface i1 is assigned to more than one node [Node1,Node2]
+qmgr Q2 {
+ description "Q2"
+ interface i1 { 
+	host "q2.foo.bar"
+	ip 192.168.0.100
+	port 1416
+ } 
+ interface i2 { 
+	host "q2.foo.bar"
+	ip 192.168.0.100
+	port 1417
+ } 
+}

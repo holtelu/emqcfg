@@ -8,9 +8,9 @@ import org.eclipse.xtext.resource.XtextResource;
 public abstract class AbstractMQCfgXtextTests extends AbstractXtextTests {
 
 	@SuppressWarnings("unchecked")
-	protected <T extends EObject> T readModelFromClasspath(Class<T> clazz)
+	protected <T extends EObject> T readModelFromClasspath(Class<T> clazz, String modelResourceName)
 			throws Exception {
-				InputStream is=this.getClass().getResourceAsStream("ClusterChecks.mqcfg");
+				InputStream is=this.getClass().getResourceAsStream(modelResourceName);
 				assertNotNull(is);
 				XtextResource resource = getResource(is);
 				EObject object = resource.getParseResult().getRootASTElement();

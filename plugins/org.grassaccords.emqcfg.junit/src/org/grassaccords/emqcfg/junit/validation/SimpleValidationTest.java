@@ -1,7 +1,7 @@
 package org.grassaccords.emqcfg.junit.validation;
 
 import static ch.lambdaj.Lambda.*;
-import static org.hamcrest.Matchers.*;
+//import static org.hamcrest.Matchers.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +51,8 @@ public class SimpleValidationTest extends AbstractMQCfgXtextTests {
 	}
 
 	private MQCfgJavaValidator validator;
+	private Map<Object, Object> context;
+	private TestDiagnosticChain diagnostics;
 	
 	public SimpleValidationTest() {
 	}
@@ -59,21 +61,20 @@ public class SimpleValidationTest extends AbstractMQCfgXtextTests {
 		super.setUp();
 		with(MQCfgStandaloneSetup.class);
 		validator=get(MQCfgJavaValidator.class);
+		context = new HashMap<Object, Object>();
+		diagnostics = new TestDiagnosticChain();
 	}
 	
 	public void testAllClusterChecks() throws Exception {
-		Model model = readModelFromClasspath(Model.class);
-
+		Model model = readModelFromClasspath(Model.class, "ClusterChecks.mqcfg");
 		assertNotNull( model );
 		
-		Map<Object, Object> context=new HashMap<Object, Object>();
-		TestDiagnosticChain diagnostics=new TestDiagnosticChain();
 		List<Cluster> allCluster = MQCfgUtil.allCluster(model);
 		for (Cluster cluster : allCluster) {
 			validator.validate(cluster, diagnostics, context);
 		}
-		List<Diagnostic> errorsList = filter(having(on(Diagnostic.class).getSeverity(),equalTo(Diagnostic.ERROR)), diagnostics);
-		List<Diagnostic> warningsList = filter(having(on(Diagnostic.class).getSeverity(),equalTo(Diagnostic.WARNING)), diagnostics);
+//		List<Diagnostic> errorsList = filter(having(on(Diagnostic.class).getSeverity(),equalTo(Diagnostic.ERROR)), diagnostics);
+//		List<Diagnostic> warningsList = filter(having(on(Diagnostic.class).getSeverity(),equalTo(Diagnostic.WARNING)), diagnostics);
 		
 		List<Diagnostic> sortedList = sort(diagnostics, on(Diagnostic.class).getMessage());
 		for (Diagnostic object : sortedList) {
@@ -81,7 +82,22 @@ public class SimpleValidationTest extends AbstractMQCfgXtextTests {
 		}
 		
 	}
-	
+
+	public void testIPIsAssignedToOnlyOneNode() throws Exception {
+		Model model = readModelFromClasspath(Model.class, "IPIsAssignedToOnlyOneNode.mqcfg");
+		assertNotNull( model );
+
+		validator.validate(model, diagnostics, context);
+		
+		assertEquals(2, diagnostics.diagnosticList.size());
+		
+		List<Diagnostic> sortedList = sort(diagnostics, on(Diagnostic.class).getMessage());
+		for (Diagnostic object : sortedList) {
+			System.out.println(object.getMessage());
+		}
+		
+	}
+
 	
 
 

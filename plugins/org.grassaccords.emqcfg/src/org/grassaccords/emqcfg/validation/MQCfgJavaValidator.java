@@ -4,6 +4,7 @@ import static ch.lambdaj.Lambda.*;
 import static org.grassaccords.emqcfg.util.MQCfgUtil.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,10 +28,13 @@ import org.grassaccords.emqcfg.mQCfg.Node;
 import org.grassaccords.emqcfg.mQCfg.QMgr;
 import org.grassaccords.emqcfg.mQCfg.TopLevelType;
 
+import ch.lambdaj.Lambda;
+
 import com.google.common.base.Function;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
+import com.sun.xml.internal.bind.v2.TODO;
 
 public class MQCfgJavaValidator extends AbstractMQCfgJavaValidator {
 
@@ -326,4 +330,30 @@ public class MQCfgJavaValidator extends AbstractMQCfgJavaValidator {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Check
+	public void checkThatAnIPIsAssignedToOnlyOneNode(Model model) {
+		List<Node> allNodes = allNodes(model);
+		Map<String, Node> interface2NodeList = new HashMap<String, Node>();
+		for (Node node : allNodes) {
+			Object tmpInterfaceList = collect(node.getQmgrs(), on(QMgr.class)
+					.getInterfaces());
+			List<Interface> nodeInterfaceList = (List<Interface>) tmpInterfaceList;
+			for (Interface currentInterface : nodeInterfaceList) {
+				Node tmpNode = interface2NodeList.get(currentInterface.getIp());
+				if (tmpNode == null) {
+					interface2NodeList.put(currentInterface.getIp(), node);
+				} else if (tmpNode != node) {
+					error(
+							currentInterface,
+							MQCfgPackage.INTERFACE,
+							0,
+							"%1$s: The IP of the interface is assigned to more than one node %2$s.",
+							currentInterface.getName(), Arrays.asList(tmpNode.getName(),
+									node.getName()));
+				}
+			}
+
+		}
+	}
 }
