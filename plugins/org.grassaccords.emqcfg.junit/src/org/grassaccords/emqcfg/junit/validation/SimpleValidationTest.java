@@ -1,7 +1,8 @@
 package org.grassaccords.emqcfg.junit.validation;
 
 import static ch.lambdaj.Lambda.*;
-//import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,8 +74,6 @@ public class SimpleValidationTest extends AbstractMQCfgXtextTests {
 		for (Cluster cluster : allCluster) {
 			validator.validate(cluster, diagnostics, context);
 		}
-//		List<Diagnostic> errorsList = filter(having(on(Diagnostic.class).getSeverity(),equalTo(Diagnostic.ERROR)), diagnostics);
-//		List<Diagnostic> warningsList = filter(having(on(Diagnostic.class).getSeverity(),equalTo(Diagnostic.WARNING)), diagnostics);
 		
 		List<Diagnostic> sortedList = sort(diagnostics, on(Diagnostic.class).getMessage());
 		for (Diagnostic object : sortedList) {
@@ -90,12 +89,8 @@ public class SimpleValidationTest extends AbstractMQCfgXtextTests {
 		validator.validate(model, diagnostics, context);
 		
 		assertEquals(2, diagnostics.diagnosticList.size());
-		
-		List<Diagnostic> sortedList = sort(diagnostics, on(Diagnostic.class).getMessage());
-		for (Diagnostic object : sortedList) {
-			System.out.println(object.getMessage());
-		}
-		
+		assertThat(diagnostics.diagnosticList.get(0).getMessage(),containsString("[Node1, Node2]"));
+		assertThat(diagnostics.diagnosticList.get(1).getMessage(),containsString("[Node1, Node2]"));
 	}
 
 	

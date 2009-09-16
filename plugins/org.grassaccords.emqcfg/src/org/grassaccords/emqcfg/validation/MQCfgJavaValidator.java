@@ -28,13 +28,10 @@ import org.grassaccords.emqcfg.mQCfg.Node;
 import org.grassaccords.emqcfg.mQCfg.QMgr;
 import org.grassaccords.emqcfg.mQCfg.TopLevelType;
 
-import ch.lambdaj.Lambda;
-
 import com.google.common.base.Function;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
-import com.sun.xml.internal.bind.v2.TODO;
 
 public class MQCfgJavaValidator extends AbstractMQCfgJavaValidator {
 
